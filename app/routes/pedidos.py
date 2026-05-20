@@ -14,14 +14,15 @@ pedidos = [
     }
 ]
 
-# GET
+# GET → sigue protegido (solo login)
 @router.get("/pedidos")
 def obtener_pedidos(user=Depends(verificar_token)):
     return pedidos
 
-# POST
+
+# POST → PUBLICO (sin token)
 @router.post("/pedidos")
-def agregar_pedido(pedido: Pedido, user=Depends(verificar_token)):
+def agregar_pedido(pedido: Pedido):
 
     nuevo = pedido.dict()
 
@@ -33,10 +34,12 @@ def agregar_pedido(pedido: Pedido, user=Depends(verificar_token)):
     pedidos.append(nuevo)
 
     return {
-        "mensaje": "Pedido agregado correctamente"
+        "mensaje": "Pedido agregado correctamente",
+        "pedido": nuevo
     }
 
-# PUT
+
+# PUT → protegido
 @router.put("/pedidos/{id}")
 def actualizar_pedido(
     id: int,
@@ -60,7 +63,8 @@ def actualizar_pedido(
         detail="Pedido no encontrado"
     )
 
-# DELETE
+
+# DELETE → protegido
 @router.delete("/pedidos/{id}")
 def eliminar_pedido(
     id: int,
